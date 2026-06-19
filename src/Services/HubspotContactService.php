@@ -6,6 +6,6 @@ class HubspotContactService extends HubspotEntityService
 {
     protected function endpoint(): string
     {
-        return '/objects/contacts';
+        return '/contacts';
     }
 }
