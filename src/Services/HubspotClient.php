@@ -28,7 +28,7 @@ abstract class HubspotClient extends HubspotAuth
         string $endpoint,
         array $payload = []
     ): Response {
-
+        
         $response = $this->client()->send($method, $endpoint, ['json' => $payload]);
 
         $context = [

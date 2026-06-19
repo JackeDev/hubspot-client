@@ -17,6 +17,6 @@ abstract class HubspotAuth
             'HubSpot token expired or unauthorized. Manual token replacement required.',
             $context
         );
-        throw new \Exception('HubSpot unauthorized');
+        throw new \App\Exceptions\HubspotException('HubSpot token expired or unauthorized. Manual token replacement required.', 401);
     }
 }
