@@ -3,15 +3,21 @@
 namespace Tambourine\HubspotClient\Exceptions;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
-class HubspotException extends Exception
+abstract class HubspotException extends Exception
 {
     public function __construct(
         string $message = 'Hubspot request failed',
         int $code = 0,
-        protected ?array $response = null
+        protected ?array $response = null,
+        protected ?array $context = []
     ) {
         parent::__construct($message, $code);
+        Log::channel('hubspot')->error(
+            'HubSpot token expired or unauthorized. Manual token replacement required.',
+            $context
+        );
     }
 
     public function getResponse(): ?array
