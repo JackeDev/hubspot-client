@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace Tambourine\HubspotClient\Exceptions;
 
 use Exception;
 
