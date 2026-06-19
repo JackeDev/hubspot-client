@@ -2,16 +2,17 @@
 
 namespace Tambourine\HubspotClient;
 
-use Tambourine\HubspotClient\Contracts\HubspotServiceInterface;
 use Illuminate\Support\ServiceProvider;
-use Tambourine\HubspotClient\Services\HubspotServices;
+use Tambourine\HubspotClient\Services\HubspotContactService;
+use Tambourine\HubspotClient\Services\HubspotDealService;
+use Tambourine\HubspotClient\Services\HubspotService;
 
 class HubspotServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/hubspot.php', 'hubspot');
-        
+
         if (!config()->has('logging.channels.hubspot')) {
             config()->set('logging.channels.hubspot', [
                 'driver' => 'daily',
@@ -21,14 +22,15 @@ class HubspotServiceProvider extends ServiceProvider
             ]);
         }
 
-        $this->app->singleton(HubspotServiceInterface::class, HubspotServices::class);
+        $this->app->singleton(HubspotContactService::class);
+        $this->app->singleton(HubspotDealService::class);
+        $this->app->singleton(HubspotService::class);
     }
 
     public function boot(): void
     {
         $this->publishes([
-            __DIR__.'/../config/hubspot.php' =>
-                config_path('hubspot.php'),
+            __DIR__.'/../config/hubspot.php' => config_path('hubspot.php'),
         ], 'hubspot-config');
     }
 }
