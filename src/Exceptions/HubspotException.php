@@ -15,7 +15,7 @@ abstract class HubspotException extends Exception
     ) {
         parent::__construct($message, $code);
         Log::channel('hubspot')->error(
-            'HubSpot token expired or unauthorized. Manual token replacement required.',
+            $message,
             $context
         );
     }

@@ -11,6 +11,15 @@ class HubspotServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/hubspot.php', 'hubspot');
+        
+        if (!config()->has('logging.channels.hubspot')) {
+            config()->set('logging.channels.hubspot', [
+                'driver' => 'daily',
+                'path'   => storage_path('logs/hubspot.log'),
+                'level'  => 'error',
+                'days'   => 14,
+            ]);
+        }
 
         $this->app->singleton(HubspotServiceInterface::class, HubspotServices::class);
     }
