@@ -3,31 +3,29 @@
 namespace Tambourine\HubspotClient\Tests\Feature\Services;
 
 use Illuminate\Support\Facades\Http;
-use Tambourine\HubspotClient\Exceptions\AuthorizationException;
 use Tambourine\HubspotClient\Exceptions\GenericHubspotException;
 use Tambourine\HubspotClient\Exceptions\RateLimitException;
+use Tambourine\HubspotClient\Exceptions\ResourceNotFoundException;
 use Tambourine\HubspotClient\Exceptions\ValidationException;
-use Tambourine\HubspotClient\Services\HubspotDealService;
+use Tambourine\HubspotClient\Services\HubspotAssociationService;
 use Tambourine\HubspotClient\Tests\TestCase;
 
-class HubspotDealServiceTest extends TestCase
+class HubspotAssociationServiceTest extends TestCase
 {
     private array $validProperties = [
-        'name'     => 'Enterprise Deal',
-        'amount'   => 15000,
-        'pipeline' => 'default',
-        'stage'    => 'appointmentscheduled',
+        'contact_id' => 12345,
+        'deal_id'=> 98765,
     ];
 
     private array $hubspotResponse = [
         'id' => '201'
     ];
 
-    public function test_creates_a_deal_and_returns_the_hubspot_response(): void
+    public function test_creates_a_association_and_returns_the_hubspot_response(): void
     {
         Http::fake(['*' => Http::response($this->hubspotResponse, 201)]);
 
-        $result = app(HubspotDealService::class)->create($this->validProperties);
+        $result = app(HubspotAssociationService::class)->create($this->validProperties);
 
         $this->assertSame($this->hubspotResponse, $result);
     }
@@ -36,15 +34,13 @@ class HubspotDealServiceTest extends TestCase
     {
         Http::fake(['*' => Http::response(['id' => '201'], 201)]);
 
-        app(HubspotDealService::class)->create($this->validProperties);
+        app(HubspotAssociationService::class)->create($this->validProperties);
 
         Http::assertSent(fn ($request) =>
             $request->method() === 'POST' &&
-            str_contains($request->url(), '/deals') &&
-            $request->data()['properties']['dealName'] === 'Enterprise Deal' &&
-            $request->data()['properties']['amount'] === 15000 &&
-            $request->data()['properties']['pipeline'] === 'default' &&
-            $request->data()['properties']['stage'] === 'appointmentscheduled'
+            str_contains($request->url(), '/associations') &&
+            $request->data()['properties']['contact_id'] === 12345 &&
+            $request->data()['properties']['deal_id'] === 98765
         );
     }
 
@@ -52,7 +48,7 @@ class HubspotDealServiceTest extends TestCase
     {
         Http::fake(['*' => Http::response(['id' => '201'], 201)]);
 
-        app(HubspotDealService::class)->create($this->validProperties);
+        app(HubspotAssociationService::class)->create($this->validProperties);
 
         Http::assertSent(fn ($request) =>
             $request->hasHeader('Authorization', 'Bearer fake-test-token')
@@ -65,7 +61,7 @@ class HubspotDealServiceTest extends TestCase
 
         Http::fake(['*' => Http::response(['message' => 'Too many requests'], 429)]);
 
-        app(HubspotDealService::class)->create($this->validProperties);
+        app(HubspotAssociationService::class)->create($this->validProperties);
     }
 
     public function test_throws_generic_hubspot_exception_on_unexpected_server_error(): void
@@ -74,7 +70,31 @@ class HubspotDealServiceTest extends TestCase
 
         Http::fake(['*' => Http::response(['message' => 'Internal server error'], 500)]);
 
-        app(HubspotDealService::class)->create($this->validProperties);
+        app(HubspotAssociationService::class)->create($this->validProperties);
+    }
+
+    public function test_throws_resource_not_found_exception_when_contact_id_does_not_exist(): void
+    {
+        $this->expectException(ResourceNotFoundException::class);
+
+        Http::fake(['*' => Http::response(['message' => 'Contact not found'], 404)]);
+
+        app(HubspotAssociationService::class)->create([
+            'contact_id' => 99999999,
+            'deal_id'    => 98765,
+        ]);
+    }
+
+    public function test_throws_resource_not_found_exception_when_deal_id_does_not_exist(): void
+    {
+        $this->expectException(ResourceNotFoundException::class);
+
+        Http::fake(['*' => Http::response(['message' => 'Deal not found'], 404)]);
+
+        app(HubspotAssociationService::class)->create([
+            'contact_id' => 12345,
+            'deal_id'    => 99999999,
+        ]);
     }
 
     public function test_throws_validation_exception_when_required_deal_field_is_missing_from_input(): void
@@ -82,6 +102,6 @@ class HubspotDealServiceTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Missing or invalid properties');
 
-        app(HubspotDealService::class)->create(['name' => 'Enterprise Deal', 'amount' => 15000]);
+        app(HubspotAssociationService::class)->create(['contact_id' => 12345]);
     }
 }
