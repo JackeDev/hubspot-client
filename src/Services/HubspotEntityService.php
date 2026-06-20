@@ -3,6 +3,7 @@
 namespace Tambourine\HubspotClient\Services;
 
 use Tambourine\HubspotClient\Contracts\HubspotEntityInterface;
+use TypeError;
 
 abstract class HubspotEntityService extends HubspotClient implements HubspotEntityInterface
 {
@@ -11,7 +12,12 @@ abstract class HubspotEntityService extends HubspotClient implements HubspotEnti
 
     public function create(array $properties): array
     {
-        $data = $this->buildProperties($properties);
-        return $this->httpPost($this->endpoint(), ['properties' => $data]);
+        try {
+            $data = $this->buildProperties($properties);
+        } catch (TypeError) {
+            $this->handleError(context: ['provided' => array_keys($properties)], code: 422);
+        }
+
+        return $this->httpPost($this->endpoint(), ['properties' => $data ?? []]);
     }
 }

@@ -6,6 +6,7 @@ use Tambourine\HubspotClient\Exceptions\AuthorizationException;
 use Tambourine\HubspotClient\Exceptions\ResourceNotFoundException;
 use Tambourine\HubspotClient\Exceptions\RateLimitException;
 use Tambourine\HubspotClient\Exceptions\GenericHubspotException;
+use Tambourine\HubspotClient\Exceptions\ValidationException;
 
 trait HandleExceptions {
 
@@ -22,16 +23,20 @@ trait HandleExceptions {
             'class' => RateLimitException::class,
             'message' => 'HubSpot rate limit exceeded',
         ],
+        422 => [
+            'class' => ValidationException::class,
+            'message' => 'Missing or invalid properties',
+        ],
         'default' => [
             'class' => GenericHubspotException::class,
             'message' => 'HubSpot API error'
         ]
     ];
 
-    private function handleError(Response $response, array $context = []): void
+    public function handleError(?Response $response = null, array $context = [], ?int $code = 400): void
     {
-        $exception = self::EXCEPTIONS[$response->status()] ?? self::EXCEPTIONS['default'];
+        $exception = self::EXCEPTIONS[$response?->status() ?? $code] ?? self::EXCEPTIONS['default'];
         $class = $exception['class'];
-        throw new $class($exception['message'], $response->status(), $response->json(), $context);
+        throw new $class($exception['message'], $response?->status() ?? $code, $response?->json(), $context);
     }
 }
