@@ -18,7 +18,7 @@ class DealDataTest extends TestCase
         );
 
         $this->assertSame([
-            'dealName' => 'Enterprise Deal',
+            'dealname' => 'Enterprise Deal',
             'amount'   => 15000,
             'pipeline' => 'default',
             'stage'    => 'appointmentscheduled',

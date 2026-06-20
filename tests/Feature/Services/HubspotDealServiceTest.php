@@ -41,7 +41,7 @@ class HubspotDealServiceTest extends TestCase
         Http::assertSent(fn ($request) =>
             $request->method() === 'POST' &&
             str_contains($request->url(), '/deals') &&
-            $request->data()['properties']['dealName'] === 'Enterprise Deal' &&
+            $request->data()['properties']['dealname'] === 'Enterprise Deal' &&
             $request->data()['properties']['amount'] === 15000 &&
             $request->data()['properties']['pipeline'] === 'default' &&
             $request->data()['properties']['stage'] === 'appointmentscheduled'

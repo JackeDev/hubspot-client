@@ -14,7 +14,7 @@ class DealData {
     public function toHubSpotProperties(): array
     {
         return array_filter([
-            'dealName' => $this->name,
+            'dealname' => $this->name,
             'amount' => $this->amount,
             'pipeline' => $this->pipeline,
             'stage' => $this->stage
