@@ -10,19 +10,19 @@ abstract class HubspotClient extends HubspotAuth
 {
     use HandleExceptions;
 
-    protected function httpGet(string $uri, array $query = []): array
+    protected function httpGet(string $uri, array $query = []): Response
     {
-        return $this->request('GET', $uri, $query)->json();
+        return $this->request('GET', $uri, $query);
     }
 
-    protected function httpPost(string $uri, array $payload = []): array
+    protected function httpPost(string $uri, array $payload = []): Response
     {
-        return $this->request('POST', $uri, $payload)->json();
+        return $this->request('POST', $uri, $payload);
     }
 
-    protected function httpPatch(string $uri, array $payload = []): array
+    protected function httpPatch(string $uri, array $payload = []): Response
     {
-        return $this->request('PATCH', $uri, $payload)->json();
+        return $this->request('PATCH', $uri, $payload);
     }
 
     private function getApiUrl(): string

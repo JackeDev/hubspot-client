@@ -29,7 +29,7 @@ class HubspotDealServiceTest extends TestCase
 
         $result = app(HubspotDealService::class)->create($this->validProperties);
 
-        $this->assertSame($this->hubspotResponse, $result);
+        $this->assertSame($this->hubspotResponse, $result->json());
     }
 
     public function test_sends_the_correct_endpoint_and_mapped_properties(): void

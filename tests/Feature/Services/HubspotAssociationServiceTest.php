@@ -17,7 +17,7 @@ class HubspotAssociationServiceTest extends TestCase
         'deal_id'=> 98765,
     ];
 
-    private array $hubspotResponse = [
+    private $hubspotResponse = [
         'id' => '201'
     ];
 
@@ -27,7 +27,7 @@ class HubspotAssociationServiceTest extends TestCase
 
         $result = app(HubspotAssociationService::class)->create($this->validProperties);
 
-        $this->assertSame($this->hubspotResponse, $result);
+        $this->assertSame($this->hubspotResponse, $result->json());
     }
 
     public function test_sends_the_correct_endpoint_and_mapped_properties(): void
