@@ -18,8 +18,8 @@ class ContactDataTest extends TestCase
         );
 
         $this->assertSame([
-            'firstName' => 'John',
-            'lastName'  => 'Doe',
+            'firstname' => 'John',
+            'lastname'  => 'Doe',
             'email'     => 'john@example.com',
             'phone'     => '+1234567890',
         ], $data->toHubSpotProperties());
@@ -35,8 +35,8 @@ class ContactDataTest extends TestCase
 
         $properties = $data->toHubSpotProperties();
 
-        $this->assertArrayHasKey('firstName', $properties);
-        $this->assertArrayHasKey('lastName', $properties);
+        $this->assertArrayHasKey('firstname', $properties);
+        $this->assertArrayHasKey('lastname', $properties);
         $this->assertArrayHasKey('email', $properties);
         $this->assertArrayNotHasKey('phone', $properties);
     }

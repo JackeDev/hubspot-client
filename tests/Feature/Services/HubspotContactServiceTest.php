@@ -39,8 +39,8 @@ class HubspotContactServiceTest extends TestCase
         Http::assertSent(fn ($request) =>
             $request->method() === 'POST' &&
             str_contains($request->url(), '/contacts') &&
-            $request->data()['properties']['firstName'] === 'John' &&
-            $request->data()['properties']['lastName'] === 'Doe' &&
+            $request->data()['properties']['firstname'] === 'John' &&
+            $request->data()['properties']['lastname'] === 'Doe' &&
             $request->data()['properties']['email'] === 'john@example.com'
         );
     }

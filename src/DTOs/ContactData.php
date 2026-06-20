@@ -14,8 +14,8 @@ class ContactData {
     public function toHubSpotProperties(): array
     {
         return array_filter([
-            'firstName' => $this->first_name,
-            'lastName' => $this->last_name,
+            'firstname' => $this->first_name,
+            'lastname' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone
         ], fn ($value) => $value !== null);
